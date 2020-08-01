@@ -2,31 +2,48 @@ from tkinter import *
 from time import sleep
 
 
+def correct(inp):
+    global value
+    print(len(value.get()))
+    print(inp)
+    try:
+        if len(value.get())<=15 and (inp=="00" or inp=="0" or inp=="=" or inp=="C" or inp=="←" or inp=="." or inp=="+" or inp=="*" or inp=="-" or inp=="/" or inp=="**" or int(inp)):
+            return True
+        elif inp=="C" or inp=="←":
+            return True
+    except:
+        return False
+
+
 def click(event,b):
     global value
     text= event.widget.cget("text")
-    if text == "=":
-        if value.get().isdigit():
-            scvalue= int(value.get())  
+    if correct(text):
+        if text == "=":
+            if value.get().isdigit():
+                scvalue= int(value.get())  
+            else:
+                try:
+                    scvalue= eval(value.get())  
+                    value.set(scvalue)
+                    value_bar.update()
+                except:
+                    scvalue= "Error"
+                    value.set(scvalue)
+                    value_bar.update()
+                    sleep(0.5)
+                    value.set("")
+        elif text== "C":
+            value.set("")
+            value_bar.update()
+        elif text=="←":
+            value.set(value.get()[:-1])
+            value_bar.update()
         else:
-            try:
-                scvalue= eval(value.get())   
-                value.set(scvalue)
-                value_bar.update()
-            except:
-                scvalue= "Error"
-                value.set(scvalue)
-                value_bar.update()
-                sleep(0.5)
-                value.set("")
-    elif text== "C":
-        value.set("")
-        value_bar.update()
-    elif text=="←":
-        value.set(value.get()[:-1])
-        value_bar.update()
+            value.set(value.get()+str(text))
+            value_bar.update()
     else:
-        value.set(value.get()+str(text))
+        value.set(value.get()+str(""))
         value_bar.update()
         
 
@@ -36,7 +53,7 @@ def left(event,b):
     b.config(bg="white", fg="black")
 root= Tk()
 
-root.geometry("600x850")
+root.geometry("600x650")
 root.title("Calculator")
 value= StringVar()
 value.set("")
@@ -44,9 +61,9 @@ signs = ["+","-","*","C","/","←","**","="]
 add_signs=[".","0","00"]
 k=0
 value_bar= Entry(root, textvar=value, font="sans-serif 20 bold",relief=RAISED,borderwidth=10)
-value_bar.pack(pady=20, padx=4,ipady=5,fill=X)
+value_bar.pack(pady=20, padx=10,ipady=5,fill=X)
 b_frame= Frame(root)
-b_frame.pack(side= TOP,fill=BOTH)
+b_frame.pack(side= TOP,fill=BOTH,padx=10)
 #num_buttons
 for i in range(1,5):
     Grid.rowconfigure(b_frame,i,weight=1)
