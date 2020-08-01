@@ -1,22 +1,30 @@
-import tkinter as tk 
- 
-class App(tk.Tk): 
-    def __init__(self): 
-        super().__init__() 
-        frame = tk.Frame(self, bg="green", 
-                         height=100, width=100) 
-        frame.bind("<Button-1>", self.print_event) 
-        frame.bind("<Double-Button-1>", self.print_event) 
-        frame.bind("<ButtonRelease-1>", self.print_event) 
-        frame.bind("<B1-Motion>", self.print_event) 
-        frame.bind("<Enter>", self.print_event) 
-        frame.bind("<Leave>", self.print_event) 
-        frame.pack(padx=50, pady=50) 
- 
-    def print_event(self, event): 
-        position = "(x={}, y={})".format(event.x, event.y) 
-        print(event.type, "event", position) 
- 
-if __name__ == "__main__": 
-    app = App() 
-    app.mainloop() 
+# import tkinter as tk
+# root = tk. Tk()
+# def key_pressed (event) :
+#     print (event.char)
+
+# root. bind ("<Key>", key_pressed)
+# root . mainloop ()
+
+
+
+from tkinter import *
+
+#Create & Configure root 
+root = Tk()
+Grid.rowconfigure(root, 0, weight=1)
+Grid.columnconfigure(root, 0, weight=1)
+
+#Create & Configure frame 
+frame=Frame(root)
+frame.grid(row=0, column=0, sticky=N+S+E+W)
+
+#Create a 5x10 (rows x columns) grid of buttons inside the frame
+for row_index in range(5):
+    Grid.rowconfigure(frame, row_index, weight=1)
+    for col_index in range(10):
+        Grid.columnconfigure(frame, col_index, weight=1)
+        btn = Button(frame) #create a button inside frame 
+        btn.grid(row=row_index, column=col_index, sticky=N+S+E+W)  
+
+root.mainloop()
