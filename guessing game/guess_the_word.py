@@ -1,6 +1,7 @@
 from tkinter import *
 import random
 import re
+import tkinter.messagebox as tmsg
 from time import sleep
 total = {
     "Flower": [
@@ -45,17 +46,18 @@ total = {
     ]
 }
 
-random_list = random.choice(list(total.keys()))
-random_word = random.choice(total[random_list])
-guess_word= re.sub('[a-zA-Z]','_',random_word)
+random_list = ""
+random_word = ""
+guess_word= ""
 
 
 root= Tk()
 root.title("Guess the word")
-root.geometry("710x500")
+root.geometry("710x600")
 # root.config(background="black")
 opening_frame= Frame(root)
 game_frame= Frame(root)
+
 
 def correct(inp):
     if inp.isalpha():
@@ -92,7 +94,26 @@ def swap(frame):
     frame.tkraise()
 
 
-attempt= no_of_attempts()
+attempt= 0
+def value_set():
+    global random_list,random_word,attempt,guess_word
+    random_list = random.choice(list(total.keys()))
+    random_word = random.choice(total[random_list])
+    guess_word= re.sub('[a-zA-Z]','_',random_word)
+    attempt=no_of_attempts()
+
+
+def reset(result):
+    value= tmsg.askquestion(result,"Wanna! play it again")
+    if value=="yes":
+        value_set()
+    else:
+        value_set()
+        swap(opening_frame)
+    answer.delete(0,END)
+    display_var.set(f"{update_display()}")
+    hint_label.config(text="")
+    output_display.config(text="")
 
 def check_ans():
     global attempt
@@ -105,7 +126,7 @@ def check_ans():
             return
     elif attempt>=0:
         if answervar!=random_word and attempt>0:
-            if attempt==no_of_attempts()-1:
+            if attempt==no_of_attempts()-1 or len(random_word)<=3:
                 hint_label.config(text=f"Hint:- Its a name of {random_list}")
                 display_var.set(update_display())
             elif len(answervar)>1 and answervar in random_word:
@@ -113,16 +134,19 @@ def check_ans():
             else:
                 display_var.set(update_display())
             output_display.config(text="Incorrect !!",fg="red")
+            answer.delete(0,END)
         elif answervar==random_word:
             print("correct")
             display_var.set(" ".join(random_word))
             output_display.config(text=f"Well Done!! you guessed it in {no_of_attempts()-attempt} attempts",fg="green")
+            attempt_label.config(text=f"Attempts {attempt}")
+            reset("Win!!")
         else:
             output_display.config(text=f'''You loose, no more attempts left the word was "{random_word}"''',fg="red")
-    else:
-        display_var.set(" ".join(random_word))
-    answer.delete(0,END)
-    attempt_label.config(text=f"Attempts {attempt}")
+            attempt_label.config(text=f"Attempts {attempt}")
+            display_var.set(" ".join(random_word))
+            reset("Loose!!")
+        attempt_label.config(text=f"Attempts {attempt}")
 
 
 for frame in (opening_frame,game_frame):
@@ -130,7 +154,10 @@ for frame in (opening_frame,game_frame):
 
 
 Label(opening_frame,text="Word Guessing Game",font="helvetica 50 bold").pack(pady=40)
-Button(opening_frame, text="START GAME", font="sensserif 30 bold", command=lambda :swap(game_frame)).pack(pady=90)
+start_button=Button(opening_frame, text="START GAME", font="sensserif 30 bold",borderwidth=5, command=lambda :swap(game_frame))
+start_button.pack(pady=90)
+start_button.bind("<Button-1>",value_set())
+
 Label(game_frame,text="WELCOME TO GAME",font="helvetica 40 bold").pack()
 
 display_var=StringVar()
@@ -147,7 +174,7 @@ reg= game_frame.register(correct)
 answer.config(validate="key",validatecommand=(reg,'%P'))
 
 
-Checkbutton= Button(game_frame, text= "CHECK", font="roboto 20 bold",command= check_ans)
+Checkbutton= Button(game_frame, text= "CHECK", font="roboto 20 bold",borderwidth=3,command= check_ans)
 Checkbutton.pack()
 
 output_display= Label(game_frame,font="calibri 17")
