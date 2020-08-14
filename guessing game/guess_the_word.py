@@ -104,6 +104,7 @@ def value_set():
 
 
 def reset(result):
+    global temp
     value= tmsg.askquestion(result,"Wanna! play it again")
     if value=="yes":
         value_set()
@@ -114,6 +115,7 @@ def reset(result):
     display_var.set(f"{update_display()}")
     hint_label.config(text="")
     output_display.config(text="")
+    temp=[]
 
 def check_ans():
     global attempt
