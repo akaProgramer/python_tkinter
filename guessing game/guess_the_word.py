@@ -1,4 +1,5 @@
 from tkinter import *
+from PIL import Image,ImageTk
 import random
 import re
 import tkinter.messagebox as tmsg
@@ -16,17 +17,18 @@ total = {
         "daisy"
     ],
     "Animal": ["dog", "cat", "elephant", "horse", "lion", "tiger", "cheetah", "bear", "dear"],
-    "Computer Part": [
+    "Computer Part or\n Accessories": [
         "mouse",
-        "keyoard",
+        "keyboard",
         "monitor",
         "speaker",
         "processor",
         "motherboard",
         "pendrive",
         "UPS",
-        "headphone",
-        "webcam"
+        "microphone",
+        "webcam",
+        "headphone"
     ],
     "Body Part": [
         "fingers",
@@ -54,7 +56,8 @@ guess_word= ""
 
 root= Tk()
 root.title("Guess the word")
-root.geometry("710x600")
+root.minsize(810,600)
+root.geometry("810x600")
 # root.config(background="black")
 opening_frame= Frame(root)
 game_frame= Frame(root)
@@ -78,9 +81,9 @@ def no_of_attempts():
     if word_len<=5:
         return (word_len//2)+1
     elif word_len>5 and word_len<=10:
-        return (word_len//2)
+        return (word_len//2)-1
     else:
-        return (word_len//2)+2
+        return 6
 
 temp=[]
 def update_display():
@@ -150,15 +153,17 @@ def check_ans():
             display_var.set(" ".join(random_word))
             reset("Loose!!")
         attempt_label.config(text=f"Attempts {attempt}")
-
-
+Grid.rowconfigure(root,0,weight=1)
+Grid.columnconfigure(root,0,weight=1)
 for frame in (opening_frame,game_frame):
-    frame.grid(column=0, row= 0,sticky=NSEW)
+    frame.grid(column=0, row= 0,sticky=N+S+E+W)
 
+image= Image.open("guess.png")
+photo= ImageTk.PhotoImage(image)
 
-Label(opening_frame,text="Word Guessing Game",font="helvetica 50 bold").pack(pady=40)
+Label(opening_frame,text="Word Guessing Game",font="helvetica 50 bold underline").pack(pady=100)
 start_button=Button(opening_frame, text="START GAME", font="sensserif 30 bold",borderwidth=5, command=lambda :swap(game_frame))
-start_button.pack(pady=90)
+start_button.pack(pady=10)
 start_button.bind("<Button-1>",value_set())
 
 Label(game_frame,text="WELCOME TO GAME",font="helvetica 40 bold").pack()
@@ -176,7 +181,6 @@ answer.pack(padx=40,pady=40,ipady=5)
 reg= game_frame.register(correct)
 answer.config(validate="key",validatecommand=(reg,'%P'))
 
-
 Checkbutton= Button(game_frame, text= "CHECK", font="roboto 20 bold",borderwidth=3,command= check_ans)
 Checkbutton.pack()
 
@@ -184,11 +188,10 @@ output_display= Label(game_frame,font="calibri 17")
 output_display.pack(pady=30)
 
 attempt_label= Label(game_frame,text=f"Attempts {attempt}",font="roboto 20 bold")
-attempt_label.pack(side=RIGHT)
+attempt_label.pack(side=RIGHT,padx=20)
 
 hint_label= Label(game_frame,font="arialblack 24",text=f"Hint:- Its a name of {random_list}")
 hint_label.pack(side=LEFT,padx=30)
 swap(opening_frame)
-
 root.mainloop()
 
