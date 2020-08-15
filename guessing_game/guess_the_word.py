@@ -158,8 +158,8 @@ Grid.columnconfigure(root,0,weight=1)
 for frame in (opening_frame,game_frame):
     frame.grid(column=0, row= 0,sticky=N+S+E+W)
 
-image= Image.open("guess.png")
-photo= ImageTk.PhotoImage(image)
+photo= PhotoImage(file="guess.png")
+Label(opening_frame,image=photo).pack()
 
 Label(opening_frame,text="Word Guessing Game",font="helvetica 50 bold underline").pack(pady=100)
 start_button=Button(opening_frame, text="START GAME", font="sensserif 30 bold",borderwidth=5, command=lambda :swap(game_frame))
