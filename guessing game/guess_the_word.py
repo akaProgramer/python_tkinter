@@ -43,7 +43,8 @@ total = {
         "toe",
         "elbow",
         "thumb"
-    ]
+    ],
+    "Game": ["football","basketball","cricket","volleyball","badminton","table tennis","lawn tennis"]
 }
 
 random_list = ""
@@ -60,19 +61,22 @@ game_frame= Frame(root)
 
 
 def correct(inp):
-    if inp.isalpha():
+    if len(inp)>25:
+        output_display.config(text="*Character limit exceed",fg="red")
+        return False
+    elif inp.isalpha() or " " in inp:
         output_display.config(text="")
         return True
     elif inp is "":
         return True
     else:
-        output_display.config(text="Aphabets are allowed only!!",fg="red")
+        output_display.config(text="*Aphabets are allowed only!!",fg="red")
         return False
 
 def no_of_attempts():
     word_len= len(random_word)
     if word_len<=5:
-        return (word_len//2)
+        return (word_len//2)+1
     elif word_len>5 and word_len<=10:
         return (word_len//2)
     else:
@@ -115,29 +119,26 @@ def reset(result):
     display_var.set(f"{update_display()}")
     hint_label.config(text="")
     output_display.config(text="")
+    hint_label.config(text=f"Hint:- Its a name of {random_list}")
     temp=[]
 
 def check_ans():
     global attempt
     attempt-=1
-    print(attempt)
-    answervar=user_answer.get().lower()
+    answervar=user_answer.get().lower().replace(" ","")
     if answervar=="":
             output_display.config(text="Dont leave it empty",fg="red")
             attempt+=1
             return
     elif attempt>=0:
-        if answervar!=random_word and attempt>0:
-            if attempt==no_of_attempts()-1 or len(random_word)<=3:
-                hint_label.config(text=f"Hint:- Its a name of {random_list}")
-                display_var.set(update_display())
-            elif len(answervar)>1 and answervar in random_word:
+        if answervar!=random_word.lower().replace(" ","") and attempt>0:
+            if len(answervar)>1 and answervar in random_word.lower().replace(" ",""):
                 hint_label.config(text=f"It Was too close")
             else:
                 display_var.set(update_display())
             output_display.config(text="Incorrect !!",fg="red")
             answer.delete(0,END)
-        elif answervar==random_word:
+        elif answervar==random_word.lower().replace(" ",""):
             print("correct")
             display_var.set(" ".join(random_word))
             output_display.config(text=f"Well Done!! you guessed it in {no_of_attempts()-attempt} attempts",fg="green")
@@ -170,7 +171,7 @@ display.pack(pady=40)
 
 user_answer= StringVar()
 
-answer= Entry(game_frame,font="arialblack 24 italic", textvariable=user_answer)
+answer= Entry(game_frame,font="arialblack 24", textvariable=user_answer)
 answer.pack(padx=40,pady=40,ipady=5)
 reg= game_frame.register(correct)
 answer.config(validate="key",validatecommand=(reg,'%P'))
@@ -185,8 +186,7 @@ output_display.pack(pady=30)
 attempt_label= Label(game_frame,text=f"Attempts {attempt}",font="roboto 20 bold")
 attempt_label.pack(side=RIGHT)
 
-
-hint_label= Label(game_frame,font="arialblack 24")
+hint_label= Label(game_frame,font="arialblack 24",text=f"Hint:- Its a name of {random_list}")
 hint_label.pack(side=LEFT,padx=30)
 swap(opening_frame)
 
