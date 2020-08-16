@@ -57,15 +57,22 @@ guess_word= ""
 root= Tk()
 root.title("Guess the word")
 root.minsize(810,600)
-root.geometry("810x600")
+root.geometry("890x700")
 # root.config(background="black")
-opening_frame= Frame(root)
-game_frame= Frame(root)
+opening_frame= Frame(root,highlightthickness=10)
+opening_frame.config(highlightbackground="#f0f3f5",highlightcolor="#f0f3f5")
+game_frame= Frame(root,highlightthickness=10)
+game_frame.config(highlightbackground="#f0f3f5",highlightcolor="#f0f3f5",relief=SUNKEN,borderwidth=6)
 
+root.attributes("-transparent","red")
+def pressButton(b): 
+    b.config(relief="sunken",fg="#f0e6f9", bg="#ffd700")
+    game_frame.after(100, lambda button=b: button.config(relief="raised",bg="#f0162b",fg="yellow"))
+    check_ans()
 
 def correct(inp):
     if len(inp)>25:
-        output_display.config(text="*Character limit exceed",fg="red")
+        output_display.config(text="*Character limit exceed",fg="#d62d20")
         return False
     elif inp.isalpha() or " " in inp:
         output_display.config(text="")
@@ -73,7 +80,7 @@ def correct(inp):
     elif inp is "":
         return True
     else:
-        output_display.config(text="*Aphabets are allowed only!!",fg="red")
+        output_display.config(text="*Aphabets are allowed only!!",fg="#d62d20")
         return False
 
 def no_of_attempts():
@@ -130,7 +137,7 @@ def check_ans():
     attempt-=1
     answervar=user_answer.get().lower().replace(" ","")
     if answervar=="":
-            output_display.config(text="Dont leave it empty",fg="red")
+            output_display.config(text="Dont leave it empty",fg="#d62d20")
             attempt+=1
             return
     elif attempt>=0:
@@ -139,7 +146,7 @@ def check_ans():
                 hint_label.config(text=f"It Was too close")
             else:
                 display_var.set(update_display())
-            output_display.config(text="Incorrect !!",fg="red")
+            output_display.config(text="Incorrect !!",fg="#d62d20")
             answer.delete(0,END)
         elif answervar==random_word.lower().replace(" ",""):
             print("correct")
@@ -148,50 +155,59 @@ def check_ans():
             attempt_label.config(text=f"Attempts {attempt}")
             reset("Win!!")
         else:
-            output_display.config(text=f'''You loose, no more attempts left the word was "{random_word}"''',fg="red")
+            output_display.config(text=f'''You loose, no more attempts left the word was "{random_word}"''',fg="#d62d20")
             attempt_label.config(text=f"Attempts {attempt}")
             display_var.set(" ".join(random_word))
             reset("Loose!!")
         attempt_label.config(text=f"Attempts {attempt}")
 Grid.rowconfigure(root,0,weight=1)
 Grid.columnconfigure(root,0,weight=1)
+
+opening_frame.config(bg="#deefb7")
+game_frame.config(bg="orange")
 for frame in (opening_frame,game_frame):
     frame.grid(column=0, row= 0,sticky=N+S+E+W)
 
-photo= PhotoImage(file="guess.png")
-Label(opening_frame,image=photo).pack()
+photo= Image.open("guessing_game/guess.png")
+resize= photo.resize((600,300),Image.ANTIALIAS)
+resized_image= ImageTk.PhotoImage(resize)
+Label(opening_frame,image=resized_image,relief=SUNKEN,highlightthickness=20,highlightcolor="black",highlightbackground="black").pack(pady=30)
 
-Label(opening_frame,text="Word Guessing Game",font="helvetica 50 bold underline").pack(pady=100)
-start_button=Button(opening_frame, text="START GAME", font="sensserif 30 bold",borderwidth=5, command=lambda :swap(game_frame))
-start_button.pack(pady=10)
+# Label(opening_frame,text="Word Guessing Game",font="helvetica 50 bold underline").pack(pady=100)
+start_button=Button(opening_frame, text="START GAME", bg="#ffd700",fg="black", activebackground="#ffd700",activeforeground="#f0e6f9" ,font="sensserif 30 bold",borderwidth=1,relief=RAISED,cursor="hand2", command=lambda :swap(game_frame))
+start_button.pack(pady=30)
 start_button.bind("<Button-1>",value_set())
 
-Label(game_frame,text="WELCOME TO GAME",font="helvetica 40 bold").pack()
+heading=Label(game_frame,text="WELCOME TO THE GAME",font="bodonimt 40 bold underline",bg="#67C8FF",fg="#ffffff")
+heading.pack(pady=30,fill=X)
 
 display_var=StringVar()
 display_var.set(f"{update_display()}")
 
-display= Label(game_frame, textvariable=display_var, font="mullish 20")
+display= Label(game_frame, textvariable=display_var,relief=RIDGE,bd=3,width=34, font="mullish 25",bg="#0066cc",fg="white",height=2,justify=CENTER)
 display.pack(pady=40)
+
 
 user_answer= StringVar()
 
-answer= Entry(game_frame,font="arialblack 24", textvariable=user_answer)
-answer.pack(padx=40,pady=40,ipady=5)
+answer= Entry(game_frame,font="arialblack 24", borderwidth=6,textvariable=user_answer,relief=SUNKEN,bg="#cfefff",justify=CENTER)
+answer.pack(padx=40,pady=40,ipady=7)
+answer.focus()
 reg= game_frame.register(correct)
 answer.config(validate="key",validatecommand=(reg,'%P'))
 
-Checkbutton= Button(game_frame, text= "CHECK", font="roboto 20 bold",borderwidth=3,command= check_ans)
+Checkbutton= Button(game_frame, text= "CHECK", font="roboto 20 bold",borderwidth=6,bg="#f0162b",fg="yellow", activebackground="#f0162b",activeforeground="#f0e6f9",cursor="hand2",command= check_ans)
+root.bind("<Return>",lambda e, b=Checkbutton: pressButton(b))
 Checkbutton.pack()
 
-output_display= Label(game_frame,font="calibri 17")
-output_display.pack(pady=30)
+output_display= Label(game_frame,font="calibri 19 bold",justify=CENTER,bg="orange")
+output_display.pack(pady=30,ipadx=10)
 
-attempt_label= Label(game_frame,text=f"Attempts {attempt}",font="roboto 20 bold")
+attempt_label= Label(game_frame,text=f"Attempts {attempt}",font="roboto 20 bold",bg="#ff6f69",padx=10,pady=10,fg="#ffffff")
 attempt_label.pack(side=RIGHT,padx=20)
+hint_label= Label(game_frame,font="arialblack 24",text=f"Hint:- Its a name of {random_list}",bg="#fdf498",padx=10,pady=10,fg="#0392cf")
+hint_label.pack(side=LEFT,padx=14)
 
-hint_label= Label(game_frame,font="arialblack 24",text=f"Hint:- Its a name of {random_list}")
-hint_label.pack(side=LEFT,padx=30)
 swap(opening_frame)
 root.mainloop()
 

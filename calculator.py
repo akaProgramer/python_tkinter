@@ -20,7 +20,7 @@ def key_pressed(event):
 def pressButton(b): 
     b.invoke()
     b.config(relief="sunken",fg="white", bg="orange")
-    root.after(100, lambda button=b: button.config(relief="groove",bg="white",fg="black"))
+    root.after(100, lambda button=b: button.config(relief="groove",bg="black",fg="white"))
 
 def correct(inp):
     global value
@@ -81,7 +81,11 @@ def click(event,b):
 def entered(event,b):
     b.config(bg="#caced9",fg="#f2f4fa")
 def left(event,b):
-    b.config(bg="white", fg="black")
+    b.config(bg="black", fg="white")
+def signentered(event,b):
+    b.config(bg="#caced9",fg="#f2f4fa")
+def signleft(event,b):
+    b.config(bg="#212020", fg="white")
 root= Tk()
 
 root.geometry("600x650")
@@ -91,10 +95,12 @@ value.set("0")
 signs = ["+","-","*","C","/","←","**","="]
 add_signs=[".","0","00"]
 k=0
-value_bar= Entry(root, textvar=value, font="sans-serif 30 bold",relief=SUNKEN,borderwidth=10)
+value_bar= Entry(root, textvar=value, font="sans-serif 30 bold",relief=SUNKEN,bg="black",fg="white",highlightthickness=1,highlightcolor="white",highlightbackground="white")
 value_bar.pack(pady=20, padx=10,ipady=13,fill=X)
 value_bar.focus_set() 
 b_frame= Frame(root)
+root.attributes("-alpha",0.95)
+root.config(bg="#2e2d2d")
 b_frame.pack(side= TOP,fill=BOTH,padx=10,pady=20,expand=True)
 root.bind("<Key>",lambda event: key_pressed(event))
 #num_buttons
@@ -102,10 +108,10 @@ for i in range(1,5):
     Grid.rowconfigure(b_frame,i,weight=1)
     for j in range(0,3):
         if i<=3:
-            bj= Button(b_frame, text=f"{10-(3*i)+j}",relief=GROOVE, font="sans-serif 20 bold",border="2px black", fg="black", bg="white",activebackground="white",width=4)
+            bj= Button(b_frame, text=f"{10-(3*i)+j}",relief=GROOVE, font="sans-serif 20 bold",border="2px black", fg="white", bg="black",activebackground="white",width=4)
             root.bind(f"{10-(3*i)+j}", lambda e, b=bj: pressButton(b))
         else:
-            bj= Button(b_frame, text=f"{add_signs[k]}",relief=GROOVE, font="sans-serif 20 bold",border="2px black", fg="black", bg="white",activebackground="white",width=4)
+            bj= Button(b_frame, text=f"{add_signs[k]}",relief=GROOVE, font="sans-serif 20 bold",border="2px black", fg="white", bg="black",activebackground="white",width=4)
             root.bind(f"{add_signs[k]}", lambda e, b=bj: pressButton(b))
             k+=1
         bj.bind("<Enter>",lambda event, b=bj : entered(event,b))
@@ -116,7 +122,7 @@ for i in range(1,5):
 #sign_buttons
 for (i,sign) in zip(range(8),signs):
     if i>2:
-        b_sign_i= Button(b_frame, text=f"{sign}",relief=GROOVE, font="sans-serif 20 bold",border="2px black", fg="black", bg="white",activebackground="white",width=15)
+        b_sign_i= Button(b_frame, text=f"{sign}",relief=GROOVE, font="sans-serif 20 bold",border="2px black", fg="white", bg="#212020",activebackground="white",width=15)
         if sign=="←":
             root.bind("<BackSpace>", lambda e, b=b_sign_i: pressButton(b))
         elif sign=="=":
@@ -130,12 +136,12 @@ for (i,sign) in zip(range(8),signs):
         Grid.columnconfigure(b_frame,4,weight=1)
         b_sign_i.grid(row=i-3,column=4,sticky=N+S+S+E+W)   
     else:
-        b_sign_i= Button(b_frame, text=f"{sign}",relief=GROOVE, font="sans-serif 20 bold",border="2px black", fg="black", bg="white",activebackground="white",width=4)
+        b_sign_i= Button(b_frame, text=f"{sign}",relief=GROOVE, font="sans-serif 20 bold",border="2px black", fg="white", bg="#212020",activebackground="white",width=4)
         root.bind(sign, lambda e, b=b_sign_i: pressButton(b))
         Grid.rowconfigure(b_frame,0,weight=1)
         Grid.columnconfigure(b_frame,i,weight=1) 
         b_sign_i.grid(row=0,column=i,sticky=N+S+S+E+W)
-    b_sign_i.bind("<Enter>",lambda event, b=b_sign_i : entered(event,b))
-    b_sign_i.bind("<Leave>",lambda event, b=b_sign_i : left(event,b))
+    b_sign_i.bind("<Enter>",lambda event, b=b_sign_i : signentered(event,b))
+    b_sign_i.bind("<Leave>",lambda event, b=b_sign_i : signleft(event,b))
     b_sign_i.bind("<Button-1>",lambda event, b=b_sign_i : click(event,b))   
 root.mainloop()
