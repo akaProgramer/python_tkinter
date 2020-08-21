@@ -161,7 +161,7 @@ class TransparentWin (Tk.Tk) :
         self.focus_force()
 
         ''' Removes the native window boarder. '''
-        # self.overrideredirect(True)
+        self.overrideredirect(True)
 
         ''' Disables resizing of the widget.  '''
         self.resizable(False, False)
