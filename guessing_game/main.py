@@ -16,7 +16,8 @@ total = {
         "sunflower",
         "daisy"
     ],
-    "Animal": ["dog", "cat", "elephant", "horse", "lion", "tiger", "cheetah", "bear", "dear"],
+    "Animal": ["dog", "cat", "elephant", "horse", "lion", "tiger", "cheetah", "bear", "dear","crocodile","pig","cow","buffalo","goat"
+    ,"hippopotamus"],
     "Computer Part or\n Accessories": [
         "mouse",
         "keyboard",
@@ -46,7 +47,9 @@ total = {
         "elbow",
         "thumb"
     ],
-    "Game": ["football","basketball","cricket","volleyball","badminton","table tennis","lawn tennis"]
+    "Game": ["football","basketball","cricket","volleyball","badminton","table tennis","lawn tennis"],
+    "Vegetable": ["onion","potato","cabbage","tomato","cucumber","raddish","carrot","sweet potato","cauliflower","spinach","brinjal",
+    "lady finger"]
 }
 
 random_list = ""
