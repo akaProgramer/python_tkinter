@@ -29,7 +29,8 @@ total = {
         "UPS",
         "microphone",
         "webcam",
-        "headphone"
+        "headphone",
+        "router"
     ],
     "Body Part": [
         "fingers",
@@ -49,7 +50,7 @@ total = {
     ],
     "Game": ["football","basketball","cricket","volleyball","badminton","table tennis","lawn tennis"],
     "Vegetable": ["onion","potato","cabbage","tomato","cucumber","raddish","carrot","sweet potato","cauliflower","spinach","brinjal",
-    "lady finger"]
+    "lady finger","garlic"]
 }
 
 random_list = ""
@@ -59,7 +60,7 @@ guess_word= ""
 
 root= Tk()
 root.title("Guess the word")
-root.minsize(810,600)
+root.minsize(810,700)
 root.geometry("890x700+300+60")
 # root.config(background="black")
 
@@ -169,7 +170,6 @@ def switch_frame(new_frame):
     global frame
     if frame is not None:
         frame.destroy()
-        print(frame)
     frame = new_frame
     frame.grid(column=0, row= 0,sticky=N+S+E+W)
     Grid.rowconfigure(root,0,weight=1)
@@ -180,14 +180,17 @@ def opening_frame_build():
     opening_frame= Frame(root,highlightthickness=10)
     opening_frame.config(highlightbackground="#f0f3f5",highlightcolor="#f0f3f5",bg="#deefb7")
     photo= Image.open("guessing_game/guess.png")
-    resize= photo.resize((600,300),Image.ANTIALIAS)
+    resize= photo.resize((700,300),Image.ANTIALIAS)
     resized_image= ImageTk.PhotoImage(resize)
     var_photo=Label(opening_frame,image=resized_image,relief=SUNKEN,highlightcolor="black",highlightbackground="black",highlightthickness=20)
     var_photo.image= resized_image
-    var_photo.pack(pady=30)
+    var_photo.pack(pady=30,padx=50)
     start_button=Button(opening_frame, text="START GAME", bg="#ffd700",fg="black", activebackground="#ffd700",activeforeground="#f0e6f9" ,font="sensserif 30 bold",borderwidth=1,relief=RAISED,cursor="hand2", command=lambda :switch_frame(game_frame_build()))
-    start_button.pack(pady=30)
+    start_button.pack(pady=100)
     start_button.bind("<Button-1>",value_set())
+    # rules_heading_label= Label(opening_frame,text="How to Play",bg="skyblue",font="algerian 40 bold",fg="white")
+    # rules_heading_label.pack(anchor=W,padx=10,pady=20)
+    # rules= Label(text='''''')
     return opening_frame
 
 
