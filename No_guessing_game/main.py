@@ -19,7 +19,10 @@ class number_guessing_game(Tk):
             self.frame.destroy()
         self.frame= new_frame
         self.frame.pack(expand=True,fill=BOTH)
-    
+    def pressButton(self,b): 
+        b.config(relief="sunken",fg="skyblue", bg="#d2d4dc")
+        b.after(100, lambda button=b: button.config(relief="raised",bg="#fffefe",fg="skyblue"))
+        self.check()
     def range_check(self):
         self.from_var= self.from_entry_var.get()
         self.to_var=self.to_entry_var.get()
@@ -38,15 +41,15 @@ class number_guessing_game(Tk):
             self.random_number= random.randint(int(self.from_var),int(self.to_var))
             self.guess_number= re.sub('[0-9]','_',str(self.random_number))
             self.guess_number_space= " ".join(self.guess_number)
-            self.display.config(text=self.guess_number_space)
-            self.range_heading= Label(self.game_frame,text=f"range is from {self.from_var} to {self.to_var}",font="mssansserif 20 bold")
-            self.range_heading.pack(pady=10,ipady=20,ipadx=10)
+            self.display.config(text=f"Its a {len(str(self.random_number))} digit number {self.guess_number_space}")
+            self.range_heading= Label(self.game_frame,text=f"Range is from {self.from_var} to {self.to_var}",font="consolas 25 bold",bd=10,bg="#b6fcd5",fg="orange")
+            self.range_heading.pack(pady=10,ipady=20,ipadx=10,fill=X)
             self.range_frame.pack_forget()
             self.output_display.pack_forget()
             self.display.pack()
             self.user_input.pack(pady=30,ipady=10)
-            self.check_button.pack(ipady=10,pady=40)
-            self.heading.config(text="Guess the number if your can :)")
+            self.check_button.pack(ipady=5,pady=20)
+            self.heading.config(text="Guess the number if your can :)",fg="red",font="calibri 40 underline bold")
             self.previous_guesses.pack(pady=20)
             self.output_display.pack()
 
@@ -65,21 +68,21 @@ class number_guessing_game(Tk):
             self.output_display.config(text="dont leave it empty")
             self.attempt-=1
         elif int(user_number)<int(self.from_var) or int(user_number)>int(self.to_var):
-            self.output_display.config(text="Out of range",fg="red")
+            self.output_display.config(text="Out of range",fg="red",bg="#ffffff")
             self.user_input.delete(0,END)
         elif int(random_number)==int(user_number):
-            self.output_display.config(text=f"Well done you guessed it correct in {self.attempt} attempts",fg="green")
+            self.output_display.config(text=f"Well done you guessed it correct in {self.attempt} attempts",fg="green",bg="#ffffff")
             self.display.config(text=self.random_number)
             self.reset()
         elif int(user_number)<int(random_number):
-            self.output_display.config(text="guess a higer number",fg="#cd5334")
+            self.output_display.config(text="guess a higer number",fg="#cd5334",bg="#ffffff")
             self.previous_guess+=user_number + " "  
             self.previous_guesses.config(text="pervious guesses:  "+str(self.previous_guess))
             self.user_input.delete(0,END)
         elif int(user_number)>int(random_number):
-            self.output_display.config(text="guess a lower number",fg="grey")
+            self.output_display.config(text="guess a lower number",fg="grey",bg="#ffffff")
             self.previous_guess+=user_number + " "  
-            self.previous_guesses.config(text="pervious guesses:  "+str(self.previous_guess))
+            self.previous_guesses.config(text="Pervious guesses:  "+str(self.previous_guess))
             self.user_input.delete(0,END)
 
     def correct(self,inp):
@@ -134,14 +137,15 @@ class number_guessing_game(Tk):
         self.heading= Label(self.game_frame,text="Give a range!!",font="times 40 bold underline",bg="#fffacd",fg="#1e90ff")
         self.heading.pack(pady=20,fill=X,ipady=10)
         self.range_frame_content()
-        self.display= Label(self.game_frame,text="number",font="verdana 30")
+        self.display= Label(self.game_frame,text="number",font="verdana 30",bg="#ff8b94")
         self.user_input_var= StringVar()
         self.user_input= Entry(self.game_frame,font="sensserif 30 bold",justify="center",textvar=self.user_input_var,width=5)
         self.reg= self.game_frame.register(self.correct)
         self.user_input.config(validate="key",validatecommand=(self.reg,'%P'))
-        self.check_button= Button(self.game_frame,font="times 20",text="Check",relief=RAISED,bd=10,width=20,command=self.check)
+        self.check_button= Button(self.game_frame,font="arialblack 30 bold",text="Check",relief=RAISED,bd=5,width=20,command=self.check,bg="#fffefe",fg="skyblue")
+        self.bind("<Return>",lambda e, b=self.check_button: self.pressButton(b))
         self.output_display= Label(self.game_frame,font="helvetica 25 bold")
-        self.previous_guesses= Label(self.game_frame)
+        self.previous_guesses= Label(self.game_frame,font="times 20 bold",fg="white",bg="#6B5B95")
         self.output_display.pack(ipady=5)
         self.output_display.config(bg="#ff2052",fg="white")
         return self.game_frame
