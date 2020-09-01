@@ -8,6 +8,7 @@ class number_guessing_game(Tk):
     def __init__(self):
         super().__init__()
         self.geometry("800x700+400+50")
+        self.title("number guessing game")
         # self.open_frame_content()
         self.game_frame_content()
         self.frame= None
