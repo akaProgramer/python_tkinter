@@ -8,8 +8,6 @@ class stone_paper_scissor(Tk):
         super().__init__()
         self.geometry("1000x800+300+2")
         self.title("Stone Paper Scissors")
-        # self.rounds_and_name_func()
-        # self.game_frame_func()
         self.frame= None
         self.swap_frame(self.opening_frame_func())
     def result(self,computer_choice,user_choice):
