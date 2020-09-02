@@ -62,6 +62,7 @@ root= Tk()
 root.title("Guess the word")
 root.minsize(810,700)
 root.geometry("890x700+300+60")
+root.wm_iconbitmap("guessing_game/guess.ico")
 # root.config(background="black")
 
 
