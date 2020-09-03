@@ -1,23 +1,59 @@
+import tkinter
 
-from tkinter import *
+class Mbox(object):
 
-def EntryBox(root_frame, w, h):
-    boxframe = Frame(root_frame, width = w+2, height= h+2, highlightbackground="black", highlightcolor="black", highlightthickness=1, bd=0)
-    l = Entry(boxframe, borderwidth=0, relief="flat", highlightcolor="white")
-    l.place(width=w, height=h)
-    l.pack()
-    boxframe.pack()
-    return boxframe
+    root = None
 
-root = Tk()
-frame = Frame(root, width = 1800, height = 1800)
-frame.pack()
+    def __init__(self, msg, dict_key=None):
+        """
+        msg = <str> the message to be displayed
+        dict_key = <sequence> (dictionary, key) to associate with user input
+        (providing a sequence for dict_key creates an entry for user input)
+        """
+        tki = tkinter
+        self.top = tki.Toplevel(Mbox.root)
 
-labels = []
+        frm = tki.Frame(self.top, borderwidth=4, relief='ridge')
+        frm.pack(fill='both', expand=True)
 
-for i in range(16):
-    for j in range(16):
-        box = EntryBox(frame, 40, 30)
-        box.place(x = 50 + i*100, y = 30 + j*30 , width = 100, height = 30)
-        labels.append(box)
+        label = tki.Label(frm, text=msg)
+        label.pack(padx=4, pady=4)
+
+        caller_wants_an_entry = dict_key is not None
+
+        if caller_wants_an_entry:
+            self.entry = tki.Entry(frm)
+            self.entry.pack(pady=4)
+
+            b_submit = tki.Button(frm, text='Submit')
+            b_submit['command'] = lambda: self.entry_to_dict(dict_key)
+            b_submit.pack()
+
+        b_cancel = tki.Button(frm, text='Cancel')
+        b_cancel['command'] = self.top.destroy
+        b_cancel.pack(padx=4, pady=4)
+
+    def entry_to_dict(self, dict_key):
+        data = self.entry.get()
+        if data:
+            d, key = dict_key
+            d[key] = data
+            self.top.destroy()
+
+
+root = tkinter.Tk()
+
+Mbox = mbox.Mbox
+Mbox.root = root
+
+D = {'user':'Bob'}
+
+b_login = tkinter.Button(root, text='Log in')
+b_login['command'] = lambda: Mbox('Name?', (D, 'user'))
+b_login.pack()
+
+b_loggedin = tkinter.Button(root, text='Current User')
+b_loggedin['command'] = lambda: Mbox(D['user'])
+b_loggedin.pack()
+
 root.mainloop()
