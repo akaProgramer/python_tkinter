@@ -7,7 +7,7 @@ from PIL import Image,ImageTk
 class number_guessing_game(Tk):
     def __init__(self):
         super().__init__()
-        self.geometry("800x750+400+10")
+        self.geometry("900x750+400+10")
         self.title("number guessing game")
         # self.open_frame_content()
         self.wm_iconbitmap("No_guessing_game/backgound.ico")
@@ -42,7 +42,7 @@ class number_guessing_game(Tk):
             self.to_entry.delete(0,END)
             self.from_entry.focus()
         else:
-            self.game_frame.config(bg="#6B5B95")
+            self.game_frame.config(bg="#009688")
             self.random_number= random.randint(int(self.from_var),int(self.to_var))
             self.guess_number= re.sub('[0-9]','_',str(self.random_number))
             self.guess_number_space= " ".join(self.guess_number)
@@ -53,25 +53,33 @@ class number_guessing_game(Tk):
             self.output_display.pack_forget()
             self.display.pack()
             self.user_input.pack(pady=30,ipady=10)
+            self.user_input.focus()
             self.check_button.pack(ipady=5,pady=20)
             self.heading.config(text="Guess the number if your can :)",fg="red",font="calibri 40 underline bold")
             self.previous_guesses.pack(pady=20)
             self.attempt=self.attempts_Set()
+            self.back_button.pack(side=LEFT,padx=(10,0))
             self.attempts_label.config(text=f"attempts {self.attempt}")
-            self.attempts_label.pack(pady=10)
+            self.attempts_label.pack(pady=10,side=RIGHT,padx=10)
+            self.output_display.config(text="",bg="#009688")
             self.output_display.pack()
+            self.i=0
     def attempts_Set(self):
-        self.range=int(self.to_var)-int(self.from_var)
-        if self.range<=10:
-            return 3+(self.range//4)
-        elif self.range>10 and self.range<=20:
-            return 4+(self.range//4)
-        elif self.range>20 and self.range<=50:
-            return 1+(self.range//6)
-        elif self.range>50 and self.range<100:
-            return (self.range//7)+3+(self.range//4)
+        self.l=len(str(self.random_number))
+        if self.l==2:
+            return 4
+        elif self.l==3:
+            return 5
         else:
-            return (self.range//10)
+            return 3
+    def hint_update(self):
+        if self.i<self.l-1:
+            string_number= str(self.random_number)
+            self.guess_number= self.guess_number[:self.l-(self.i+1)] + string_number[-1*(self.i+1)] +self.guess_number[self.l-(self.i):]
+            self.i+=1
+            return " ".join(self.guess_number)
+        else:
+            return
     def reset(self,result):
         value= tmsg.askquestion(result,"Wanna play it again!!")
         if value=="yes":
@@ -88,22 +96,24 @@ class number_guessing_game(Tk):
                 self.output_display.config(text="dont leave it empty")
                 self.attempt+=1
             elif (int(user_number)<int(self.from_var) or int(user_number)>int(self.to_var)) and self.attempt>0:
-                self.output_display.config(text="Out of range",fg="red",bg="#ffffff")
+                self.output_display.config(text="Out of range",fg="orange",bg="#009688")
                 self.attempt+=1
                 self.user_input.delete(0,END)
             elif int(random_number)==int(user_number):
-                self.output_display.config(text=f"Well done you guessed it correct in {self.attempts_Set()-self.attempt} attempts",fg="green",bg="#ffffff")
+                self.output_display.config(text=f"Well done you guessed it correct in\n {self.attempts_Set()-self.attempt} attempts",fg="green",bg="#ffffff")
                 self.display.config(text=f"The number was {self.random_number}")
                 self.attempts_label.config(text=f"attempt {self.attempt}")
                 self.reset("win")
             elif int(user_number)<int(random_number) and self.attempt>0:
-                self.output_display.config(text="guess a higer number",fg="#cd5334",bg="#ffffff")
+                self.output_display.config(text="guess a higer number",fg="#fff4e6",bg="#009688")
                 self.previous_guess+=user_number + " "  
                 self.previous_guesses.config(text="pervious guesses:  "+str(self.previous_guess))
                 self.attempts_label.config(text=f"attempt {self.attempt}")
+                self.display.config(text=self.hint_update())
                 self.user_input.delete(0,END)
             elif int(user_number)>int(random_number) and self.attempt>0:
-                self.output_display.config(text="guess a lower number",fg="grey",bg="#ffffff")
+                self.display.config(text=self.hint_update())
+                self.output_display.config(text="guess a lower number",fg="yellow",bg="#009688")
                 self.previous_guess+=user_number + " "  
                 self.previous_guesses.config(text="Pervious guesses:  "+str(self.previous_guess))
                 self.attempts_label.config(text=f"attempt {self.attempt}")
@@ -111,7 +121,7 @@ class number_guessing_game(Tk):
             else:
                 self.attempts_label.config(text=f"attempt {self.attempt}")
                 self.display.config(text=f"The number was {self.random_number}")
-                self.output_display.config(text=f"All attempts exhaust, You lose LOL",fg="red",bg="#ffffff")
+                self.output_display.config(text=f"All attempts exhaust,\n You lose LOL",fg="red",bg="#ffffff")
                 self.reset("lose")
     def correct(self,inp):
         if len(inp)>3:
@@ -177,8 +187,9 @@ class number_guessing_game(Tk):
         self.user_input.config(validate="key",validatecommand=(self.reg,'%P'))
         self.check_button= Button(self.game_frame,font="arialblack 30 bold",text="Check",relief=RAISED,bd=5,width=20,command=self.check,bg="#fffefe",fg="skyblue")
         self.bind("<Return>",lambda e, b=self.check_button: self.pressButton(b))
-        self.previous_guesses= Label(self.game_frame,font="times 20 bold",fg="white",bg="#6B5B95")
+        self.previous_guesses= Label(self.game_frame,font="times 20 bold",fg="white",bg="#009688")
         self.attempts_label= Label(self.game_frame, font="system 20")
+        self.back_button= Button(self.game_frame,text="⬅ Back",font="arialblack 15",bg="#ffd700",fg="white",command=lambda : self.swap_frame(self.game_frame_content()))
         return self.game_frame
         
 
