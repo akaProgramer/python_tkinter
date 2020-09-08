@@ -48,9 +48,11 @@ total = {
         "elbow",
         "thumb"
     ],
-    "Game": ["football","basketball","cricket","volleyball","badminton","table tennis","lawn tennis"],
+    "Sport": ["football","basketball","cricket","volleyball","badminton","table tennis","lawn tennis"],
     "Vegetable": ["onion","potato","cabbage","tomato","cucumber","raddish","carrot","sweet potato","cauliflower","spinach","brinjal",
-    "lady finger","garlic"]
+    "lady finger","garlic"],
+    "Monument": ["taj mahal","india gate","gateway of india","lotus temple","red fort","akhbar tomb","qutub minar","golden temple"],
+    "car company": ["BMW","mercedes benz","ferrari","volkswagen","toyota","audi","jaguar","bugatti","lamborghini","honda","porsche","ford","jeep"]
 }
 
 random_list = ""
